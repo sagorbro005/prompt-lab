@@ -13,6 +13,8 @@ db_service = DBService()
 origins = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    os.getenv("FRONTEND_URL", "*"), # Allow production frontend
+
 ]
 
 app.add_middleware(

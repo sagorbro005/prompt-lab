@@ -1,68 +1,53 @@
-# 🚀 Deployment Guide for PromptLab
+# ☁️ PromptLab Deployment Guide
 
-This guide will walk you through deploying your **Next.js Frontend** to Vercel and your **FastAPI Backend** to Render.
-
----
-
-## 📋 Prerequisites
-1.  **GitHub Account**: Push your code to a new GitHub repository.
-2.  **Supabase Project**: You already have this set up.
-3.  **API Keys**: Have all your keys ready (`GEMINI_API_KEY`, etc.).
+This guide will help you deploy **PromptLab** for **FREE** using **Vercel** (Frontend) and **Render** (Backend).
 
 ---
 
-## 1️⃣ Deploy Backend (Render)
-We will use [Render](https://render.com/) because it has a native Python support and a free tier.
+## 🏗️ Phase 1: Deploy Backend (Render)
+We will deploy the Python FastAPI backend first.
 
-1.  Create an account on **Render**.
-2.  Click **New +** -> **Web Service**.
-3.  Connect your GitHub repository.
-4.  **Settings**:
-    *   **Root Directory**: `backend` (Important!)
-    *   **Runtime**: Python 3
-    *   **Build Command**: `pip install -r requirements.txt`
-    *   **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT`
-5.  **Environment Variables** (Add these in the "Environment" tab):
-    *   `GEMINI_API_KEY`: (Your Key)
-    *   `GROQ_API_KEY`: (Your Key)
-    *   `OPENROUTER_API_KEY`: (Your Key)
-    *   `HUGGINGFACE_API_KEY`: (Your Key)
-    *   `SUPABASE_URL`: (Your URL)
-    *   `SUPABASE_KEY`: (Your Key)
-    *   `PYTHON_VERSION`: `3.9.0` (Optional, ensures compatibility)
-6.  Click **Create Web Service**.
-7.  **Copy URL**: Once deployed, copy your backend URL (e.g., `https://promptlab-backend.onrender.com`).
+1.  **Push your code to GitHub** (if you haven't already).
+2.  **Sign Up/Login to [Render](https://render.com/)**.
+3.  Click **"New +"** and select **"Web Service"**.
+4.  Connect your GitHub repository.
+5.  **Settings**:
+    - **Name**: `promptlab-backend` (or similar)
+    - **Root Directory**: `backend`
+    - **Runtime**: `Python 3`
+    - **Build Command**: `pip install -r requirements.txt`
+    - **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+6.  **Environment Variables**:
+    - Add the API keys you used locally (`GEMINI_API_KEY`, `GROQ_API_KEY`, etc.).
+    - `SUPABASE_URL`: Your Supabase Project URL.
+    - `SUPABASE_KEY`: Your Supabase Anon Key.
+    - `FRONTEND_URL`: `*` (or your future Vercel URL).
+7.  Click **"Create Web Service"**.
+8.  **Copy the URL**: Once deployed, Render will give you a URL like `https://promptlab-backend.onrender.com`. **Save this.**
+
+> **Note**: The free tier on Render spins down after inactivity. The first request might take 50 seconds to wake it up.
 
 ---
 
-## 2️⃣ Deploy Frontend (Vercel)
-Vercel is the creators of Next.js and the best place to host it.
+## 🎨 Phase 2: Deploy Frontend (Vercel)
+Now we deploy the Next.js frontend.
 
-1.  Create an account on [Vercel](https://vercel.com/).
-2.  Click **Add New...** -> **Project**.
+1.  **Sign Up/Login to [Vercel](https://vercel.com/)**.
+2.  Click **"Add New..."** -> **"Project"**.
 3.  Import your GitHub repository.
-4.  **Configure Project**:
-    *   **Framework Preset**: Next.js (should detect automatically).
-    *   **Root Directory**: Click "Edit" and select `frontend`.
-5.  **Environment Variables**:
-    *   `NEXT_PUBLIC_API_URL`: Paste your **Render Backend URL** here (e.g., `https://promptlab-backend.onrender.com`).
-    *   *Note: Do not add a trailing slash `/` at the end.*
-6.  Click **Deploy**.
+4.  **Framework Preset**: It should auto-detect **Next.js**.
+5.  **Root Directory**: Click "Edit" and select `frontend`.
+6.  **Environment Variables**:
+    - Key: `NEXT_PUBLIC_API_URL`
+    - Value: `https://promptlab-backend.onrender.com` (The URL you got from Render).
+    - **Important**: Do NOT add a trailing slash `/` at the end.
+7.  Click **"Deploy"**.
 
 ---
 
-## 3️⃣ Final Check
-1.  Open your Vercel URL (e.g., `https://promptlab.vercel.app`).
-2.  Try optimizing a prompt.
-3.  If it works, you are live! 🚀
-
----
-
-### ⚠️ Troubleshooting
-- **CORS Error**: If the frontend cannot talk to the backend, check `backend/main.py`. You might need to update the `origins` list to include your new Vercel domain.
-  ```python
-  origins = [
-      "http://localhost:3000",
-      "https://your-project-name.vercel.app" # Add me!
-  ]
-  ```
+## ✅ Verification
+1.  Open your new Vercel URL (e.g., `https://promptlab.vercel.app`).
+2.  **Test**: Try optimizing a prompt.
+3.  **Troubleshooting**:
+    - If it fails, check the "Console" in browser developer tools (F12).
+    - If it says "CORS error", ensure `FRONTEND_URL` in Render matches your Vercel URL exactly (or use `*` for testing).
